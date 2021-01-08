@@ -1616,7 +1616,7 @@
                   SPI_R_NBYTE PROC
 ;;;280    
 ;;;281    void SPI_R_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
-000000  e92d43f8          PUSH     {r3-r9,lr}
+000000  b5f8              PUSH     {r3-r7,lr}
 ;;;282    {	
 ;;;283    	volatile uint8_t	bDummyRead;
 ;;;284    	uint16_t i;
@@ -1626,157 +1626,152 @@
 ;;;288    	{
 ;;;289    		case SPI_LED0:
 ;;;290    			SPI_LED0_CS_LOW;		
-000004  4d30              LDR      r5,|L12.200|
+000002  4e23              LDR      r6,|L12.144|
 ;;;291    			break;
 ;;;292    		case SPI_LED1:
 ;;;293    			SPI_LED1_CS_LOW;		
 ;;;294    			break;
 ;;;295    		case SPI_LED2:
 ;;;296    			SPI_LED2_CS_LOW;		
-000006  4f30              LDR      r7,|L12.200|
+000004  f8dfc088          LDR      r12,|L12.144|
+000008  1d37              ADDS     r7,r6,#4              ;293
+00000a  f10c0c14          ADD      r12,r12,#0x14
+00000e  2500              MOVS     r5,#0
+000010  b120              CBZ      r0,|L12.28|
+000012  2801              CMP      r0,#1                 ;287
+000014  d004              BEQ      |L12.32|
+000016  2802              CMP      r0,#2                 ;287
+000018  d106              BNE      |L12.40|
+00001a  e003              B        |L12.36|
+                  |L12.28|
+00001c  6035              STR      r5,[r6,#0]            ;290
+00001e  e003              B        |L12.40|
+                  |L12.32|
+000020  603d              STR      r5,[r7,#0]            ;293
+000022  e001              B        |L12.40|
+                  |L12.36|
+000024  f8cc5000          STR      r5,[r12,#0]
+                  |L12.40|
 ;;;297    			break;
-;;;298    		case SPI_LED3:
-;;;299    			SPI_LED3_CS_LOW;		
-000008  f8dfc0c0          LDR      r12,|L12.204|
-00000c  1d2e              ADDS     r6,r5,#4              ;293
-00000e  3714              ADDS     r7,r7,#0x14           ;296
-;;;300    			break;
-;;;301    		case SPI_LED4:
-;;;302    			SPI_LED4_CS_LOW;		
-000010  2400              MOVS     r4,#0
-000012  f1ac0904          SUB      r9,r12,#4
-000016  2805              CMP      r0,#5                 ;287
-000018  d20f              BCS      |L12.58|
-00001a  e8dff000          TBB      [pc,r0]               ;287
-00001e  0305              DCB      0x03,0x05
-000020  07090c00          DCB      0x07,0x09,0x0c,0x00
-000024  602c              STR      r4,[r5,#0]            ;290
-000026  e008              B        |L12.58|
-000028  6034              STR      r4,[r6,#0]            ;293
-00002a  e006              B        |L12.58|
-00002c  603c              STR      r4,[r7,#0]            ;296
-00002e  e004              B        |L12.58|
-000030  f8cc4000          STR      r4,[r12,#0]           ;299
-000034  e001              B        |L12.58|
-000036  f8c94000          STR      r4,[r9,#0]
-                  |L12.58|
-;;;303    			break;	
+;;;298    //		case SPI_LED3:
+;;;299    //			SPI_LED3_CS_LOW;		
+;;;300    //			break;
+;;;301    //		case SPI_LED4:
+;;;302    //			SPI_LED4_CS_LOW;		
+;;;303    //			break;	
 ;;;304    	}
 ;;;305    
 ;;;306    
 ;;;307    	while(!SPI_GET_TX_FIFO_EMPTY_FLAG(SPI_LED_PORT));
-00003a  f8df8094          LDR      r8,|L12.208|
-                  |L12.62|
-00003e  f8d80014          LDR      r0,[r8,#0x14]
-000042  03c0              LSLS     r0,r0,#15
-000044  d5fb              BPL      |L12.62|
+000028  4c1a              LDR      r4,|L12.148|
+                  |L12.42|
+00002a  6960              LDR      r0,[r4,#0x14]
+00002c  03c0              LSLS     r0,r0,#15
+00002e  d5fc              BPL      |L12.42|
 ;;;308        SPI_WRITE_TX(SPI_LED_PORT, (0xA0|bPage));
-000046  f04100a0          ORR      r0,r1,#0xa0
-00004a  f8c80020          STR      r0,[r8,#0x20]
+000030  f04100a0          ORR      r0,r1,#0xa0
+000034  6220              STR      r0,[r4,#0x20]
 ;;;309        SPI_WRITE_TX(SPI_LED_PORT, bRegAddr);	
-00004e  f8c82020          STR      r2,[r8,#0x20]
-                  |L12.82|
+000036  6222              STR      r2,[r4,#0x20]
+                  |L12.56|
 ;;;310    
 ;;;311    	while(SPI_IS_BUSY(SPI_LED_PORT));
-000052  f8d80014          LDR      r0,[r8,#0x14]
-000056  07c0              LSLS     r0,r0,#31
-000058  d1fb              BNE      |L12.82|
+000038  6960              LDR      r0,[r4,#0x14]
+00003a  07c0              LSLS     r0,r0,#31
+00003c  d1fc              BNE      |L12.56|
 ;;;312    	//** For SYNC SPI FIFO
 ;;;313    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);	
-00005a  f8d80030          LDR      r0,[r8,#0x30]
-00005e  f88d0000          STRB     r0,[sp,#0]
+00003e  6b20              LDR      r0,[r4,#0x30]
+000040  f88d0000          STRB     r0,[sp,#0]
 ;;;314    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);		
-000062  f8d80030          LDR      r0,[r8,#0x30]
-000066  f88d0000          STRB     r0,[sp,#0]
+000044  6b20              LDR      r0,[r4,#0x30]
+000046  f88d0000          STRB     r0,[sp,#0]
 ;;;315    
 ;;;316    	for(i = 0;i < blength;i++)
-00006a  2000              MOVS     r0,#0
+00004a  2000              MOVS     r0,#0
 ;;;317    	{
 ;;;318        	SPI_WRITE_TX(SPI_LED_PORT, 0);		
 ;;;319    		while(SPI_IS_BUSY(SPI_LED_PORT));
 ;;;320    		while(SPI_GET_RX_FIFO_EMPTY_FLAG(SPI_LED_PORT));
 ;;;321    		//** For SYNC SPI FIFO
 ;;;322    		b_arySPI_Rx_FIFO[i] = SPI_READ_RX(SPI_LED_PORT);
-00006c  4a19              LDR      r2,|L12.212|
-00006e  e00e              B        |L12.142|
-                  |L12.112|
-000070  f8c84020          STR      r4,[r8,#0x20]         ;318
-                  |L12.116|
-000074  f8d81014          LDR      r1,[r8,#0x14]         ;319
-000078  07c9              LSLS     r1,r1,#31             ;319
-00007a  d1fb              BNE      |L12.116|
-                  |L12.124|
-00007c  f8d81014          LDR      r1,[r8,#0x14]         ;320
-000080  05c9              LSLS     r1,r1,#23             ;320
-000082  d4fb              BMI      |L12.124|
-000084  f8d81030          LDR      r1,[r8,#0x30]
-000088  5411              STRB     r1,[r2,r0]
-00008a  1c40              ADDS     r0,r0,#1
-00008c  b280              UXTH     r0,r0                 ;316
-                  |L12.142|
-00008e  4298              CMP      r0,r3                 ;316
-000090  d3ee              BCC      |L12.112|
-                  |L12.146|
+00004c  4a12              LDR      r2,|L12.152|
+00004e  e00a              B        |L12.102|
+                  |L12.80|
+000050  6225              STR      r5,[r4,#0x20]         ;318
+                  |L12.82|
+000052  6961              LDR      r1,[r4,#0x14]         ;319
+000054  07c9              LSLS     r1,r1,#31             ;319
+000056  d1fc              BNE      |L12.82|
+                  |L12.88|
+000058  6961              LDR      r1,[r4,#0x14]         ;320
+00005a  05c9              LSLS     r1,r1,#23             ;320
+00005c  d4fc              BMI      |L12.88|
+00005e  6b21              LDR      r1,[r4,#0x30]
+000060  5411              STRB     r1,[r2,r0]
+000062  1c40              ADDS     r0,r0,#1
+000064  b280              UXTH     r0,r0                 ;316
+                  |L12.102|
+000066  4298              CMP      r0,r3                 ;316
+000068  d3f2              BCC      |L12.80|
+                  |L12.106|
 ;;;323    	}
 ;;;324    
 ;;;325    	while(SPI_IS_BUSY(SPI_LED_PORT));	
-000092  f8d80014          LDR      r0,[r8,#0x14]
-000096  07c0              LSLS     r0,r0,#31
-000098  d1fb              BNE      |L12.146|
+00006a  6960              LDR      r0,[r4,#0x14]
+00006c  07c0              LSLS     r0,r0,#31
+00006e  d1fc              BNE      |L12.106|
 ;;;326    
 ;;;327        // /CS: de-active
 ;;;328    	switch(SPI_LED_Num)
-00009a  480f              LDR      r0,|L12.216|
-00009c  7801              LDRB     r1,[r0,#0]  ; SPI_LED_Num
-00009e  2001              MOVS     r0,#1                 ;282
-0000a0  2905              CMP      r1,#5
-0000a2  d205              BCS      |L12.176|
-0000a4  e8dff001          TBB      [pc,r1]
-0000a8  0306080a          DCB      0x03,0x06,0x08,0x0a
-0000ac  0d00              DCB      0x0d,0x00
+000070  480a              LDR      r0,|L12.156|
+000072  7800              LDRB     r0,[r0,#0]  ; SPI_LED_Num
+000074  2101              MOVS     r1,#1                 ;282
+000076  b130              CBZ      r0,|L12.134|
+000078  2801              CMP      r0,#1
+00007a  d006              BEQ      |L12.138|
+00007c  2802              CMP      r0,#2
+00007e  d101              BNE      |L12.132|
 ;;;329    	{
 ;;;330    		case SPI_LED0:
 ;;;331    			SPI_LED0_CS_HIGH;		
-0000ae  6028              STR      r0,[r5,#0]
-                  |L12.176|
 ;;;332    			break;
 ;;;333    		case SPI_LED1:
 ;;;334    			SPI_LED1_CS_HIGH;		
 ;;;335    			break;
 ;;;336    		case SPI_LED2:
 ;;;337    			SPI_LED2_CS_HIGH;		
+000080  f8cc1000          STR      r1,[r12,#0]
+                  |L12.132|
 ;;;338    			break;
-;;;339    		case SPI_LED3:
-;;;340    			SPI_LED3_CS_HIGH;		
-;;;341    			break;
-;;;342    		case SPI_LED4:
-;;;343    			SPI_LED4_CS_HIGH;		
-;;;344    			break;	
+;;;339    //		case SPI_LED3:
+;;;340    //			SPI_LED3_CS_HIGH;		
+;;;341    //			break;
+;;;342    //		case SPI_LED4:
+;;;343    //			SPI_LED4_CS_HIGH;		
+;;;344    //			break;	
 ;;;345    	}
 ;;;346    
 ;;;347    
 ;;;348    }
-0000b0  e8bd83f8          POP      {r3-r9,pc}
-0000b4  6030              STR      r0,[r6,#0]            ;334
-0000b6  e7fb              B        |L12.176|
-0000b8  6038              STR      r0,[r7,#0]            ;337
-0000ba  e7f9              B        |L12.176|
-0000bc  f8cc0000          STR      r0,[r12,#0]           ;340
-0000c0  e7f6              B        |L12.176|
-0000c2  f8c90000          STR      r0,[r9,#0]            ;343
-0000c6  e7f3              B        |L12.176|
+000084  bdf8              POP      {r3-r7,pc}
+                  |L12.134|
+000086  6031              STR      r1,[r6,#0]            ;331
+000088  bdf8              POP      {r3-r7,pc}
+                  |L12.138|
+00008a  6039              STR      r1,[r7,#0]            ;334
+00008c  bdf8              POP      {r3-r7,pc}
 ;;;349    
                           ENDP
 
-                  |L12.200|
+00008e  0000              DCW      0x0000
+                  |L12.144|
                           DCD      0x40004818
-                  |L12.204|
-                          DCD      0x40004944
-                  |L12.208|
+                  |L12.148|
                           DCD      0x40061000
-                  |L12.212|
+                  |L12.152|
                           DCD      ||.bss||+0xc0
-                  |L12.216|
+                  |L12.156|
                           DCD      SPI_LED_Num
 
                           AREA ||i.SPI_W_3BYTE||, CODE, READONLY, ALIGN=2
@@ -1784,9 +1779,8 @@
                   SPI_W_3BYTE PROC
 ;;;144    
 ;;;145    void SPI_W_3BYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t bData)
-000000  e92d43f8          PUSH     {r3-r9,lr}
+000000  b5f8              PUSH     {r3-r7,lr}
 ;;;146    {		
-000004  4699              MOV      r9,r3
 ;;;147    	volatile uint8_t bDummyRead;
 ;;;148    
 ;;;149        // /CS: active
@@ -1794,121 +1788,117 @@
 ;;;151    	{
 ;;;152    		case SPI_LED0:
 ;;;153    			SPI_LED0_CS_LOW;		
-000006  4b22              LDR      r3,|L13.144|
+000002  4c18              LDR      r4,|L13.100|
 ;;;154    			break;
 ;;;155    		case SPI_LED1:
 ;;;156    			SPI_LED1_CS_LOW;		
 ;;;157    			break;
 ;;;158    		case SPI_LED2:
 ;;;159    			SPI_LED2_CS_LOW;		
-000008  4d21              LDR      r5,|L13.144|
+000004  4e17              LDR      r6,|L13.100|
+000006  2700              MOVS     r7,#0                 ;146
+000008  1d25              ADDS     r5,r4,#4              ;156
+00000a  3614              ADDS     r6,r6,#0x14
+00000c  b120              CBZ      r0,|L13.24|
+00000e  2801              CMP      r0,#1                 ;150
+000010  d004              BEQ      |L13.28|
+000012  2802              CMP      r0,#2                 ;150
+000014  d105              BNE      |L13.34|
+000016  e003              B        |L13.32|
+                  |L13.24|
+000018  6027              STR      r7,[r4,#0]            ;153
+00001a  e002              B        |L13.34|
+                  |L13.28|
+00001c  602f              STR      r7,[r5,#0]            ;156
+00001e  e000              B        |L13.34|
+                  |L13.32|
+000020  6037              STR      r7,[r6,#0]
+                  |L13.34|
 ;;;160    			break;
-;;;161    		case SPI_LED3:
-;;;162    			SPI_LED3_CS_LOW;		
-00000a  4e22              LDR      r6,|L13.148|
-00000c  1d1c              ADDS     r4,r3,#4              ;156
-00000e  3514              ADDS     r5,r5,#0x14           ;159
-;;;163    			break;
-;;;164    		case SPI_LED4:
-;;;165    			SPI_LED4_CS_LOW;		
-000010  1f37              SUBS     r7,r6,#4
-000012  f04f0c00          MOV      r12,#0                ;146
-000016  2805              CMP      r0,#5                 ;150
-000018  d212              BCS      |L13.64|
-00001a  e8dff000          TBB      [pc,r0]               ;150
-00001e  0306              DCB      0x03,0x06
-000020  090c0f00          DCB      0x09,0x0c,0x0f,0x00
-000024  f8c3c000          STR      r12,[r3,#0]           ;153
-000028  e00a              B        |L13.64|
-00002a  f8c4c000          STR      r12,[r4,#0]           ;156
-00002e  e007              B        |L13.64|
-000030  f8c5c000          STR      r12,[r5,#0]           ;159
-000034  e004              B        |L13.64|
-000036  f8c6c000          STR      r12,[r6,#0]           ;162
-00003a  e001              B        |L13.64|
-00003c  f8c7c000          STR      r12,[r7,#0]
-                  |L13.64|
-;;;166    			break;	
+;;;161    //		case SPI_LED3:
+;;;162    //			SPI_LED3_CS_LOW;		
+;;;163    //			break;
+;;;164    //		case SPI_LED4:
+;;;165    //			SPI_LED4_CS_LOW;		
+;;;166    //			break;	
 ;;;167    	}
 ;;;168    
 ;;;169    
 ;;;170        SPI_WRITE_TX(SPI_LED_PORT, (0x20|bPage));
-000040  4815              LDR      r0,|L13.152|
-000042  f0410120          ORR      r1,r1,#0x20
-000046  6201              STR      r1,[r0,#0x20]
+000022  4811              LDR      r0,|L13.104|
+000024  f0410120          ORR      r1,r1,#0x20
+000028  6201              STR      r1,[r0,#0x20]
 ;;;171        SPI_WRITE_TX(SPI_LED_PORT, bRegAddr);
-000048  6202              STR      r2,[r0,#0x20]
+00002a  6202              STR      r2,[r0,#0x20]
 ;;;172        SPI_WRITE_TX(SPI_LED_PORT, bData);
-00004a  f8c09020          STR      r9,[r0,#0x20]
-                  |L13.78|
+00002c  6203              STR      r3,[r0,#0x20]
+                  |L13.46|
 ;;;173    
 ;;;174        // wait tx finish
 ;;;175        while(SPI_IS_BUSY(SPI_LED_PORT));
-00004e  6941              LDR      r1,[r0,#0x14]
-000050  07c9              LSLS     r1,r1,#31
-000052  d1fc              BNE      |L13.78|
+00002e  6941              LDR      r1,[r0,#0x14]
+000030  07c9              LSLS     r1,r1,#31
+000032  d1fc              BNE      |L13.46|
 ;;;176    
 ;;;177        // /CS: de-active
 ;;;178    	switch(SPI_LED_Num)
-000054  4911              LDR      r1,|L13.156|
-000056  780a              LDRB     r2,[r1,#0]  ; SPI_LED_Num
-000058  2101              MOVS     r1,#1                 ;146
-00005a  2a05              CMP      r2,#5
-00005c  d20d              BCS      |L13.122|
-00005e  e8dff002          TBB      [pc,r2]
-000062  0305              DCB      0x03,0x05
-000064  07090b00          DCB      0x07,0x09,0x0b,0x00
+000034  490d              LDR      r1,|L13.108|
+000036  7809              LDRB     r1,[r1,#0]  ; SPI_LED_Num
+000038  2201              MOVS     r2,#1                 ;146
+00003a  b121              CBZ      r1,|L13.70|
+00003c  2901              CMP      r1,#1
+00003e  d004              BEQ      |L13.74|
+000040  2902              CMP      r1,#2
+000042  d105              BNE      |L13.80|
+000044  e003              B        |L13.78|
+                  |L13.70|
 ;;;179    	{
 ;;;180    		case SPI_LED0:
 ;;;181    			SPI_LED0_CS_HIGH;		
-000068  6019              STR      r1,[r3,#0]
+000046  6022              STR      r2,[r4,#0]
 ;;;182    			break;
-00006a  e006              B        |L13.122|
+000048  e002              B        |L13.80|
+                  |L13.74|
 ;;;183    		case SPI_LED1:
 ;;;184    			SPI_LED1_CS_HIGH;		
-00006c  6021              STR      r1,[r4,#0]
+00004a  602a              STR      r2,[r5,#0]
 ;;;185    			break;
-00006e  e004              B        |L13.122|
+00004c  e000              B        |L13.80|
+                  |L13.78|
 ;;;186    		case SPI_LED2:
 ;;;187    			SPI_LED2_CS_HIGH;		
-000070  6029              STR      r1,[r5,#0]
+00004e  6032              STR      r2,[r6,#0]
+                  |L13.80|
 ;;;188    			break;
-000072  e002              B        |L13.122|
-;;;189    		case SPI_LED3:
-;;;190    			SPI_LED3_CS_HIGH;		
-000074  6031              STR      r1,[r6,#0]
-;;;191    			break;
-000076  e000              B        |L13.122|
-;;;192    		case SPI_LED4:
-;;;193    			SPI_LED4_CS_HIGH;		
-000078  6039              STR      r1,[r7,#0]
-                  |L13.122|
-;;;194    			break;	
+;;;189    //		case SPI_LED3:
+;;;190    //			SPI_LED3_CS_HIGH;		
+;;;191    //			break;
+;;;192    //		case SPI_LED4:
+;;;193    //			SPI_LED4_CS_HIGH;		
+;;;194    //			break;	
 ;;;195    	}
 ;;;196    
 ;;;197        // skip first rx data
 ;;;198    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);
-00007a  6b01              LDR      r1,[r0,#0x30]
-00007c  f88d1000          STRB     r1,[sp,#0]
+000050  6b01              LDR      r1,[r0,#0x30]
+000052  f88d1000          STRB     r1,[sp,#0]
 ;;;199    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);
-000080  6b01              LDR      r1,[r0,#0x30]
-000082  f88d1000          STRB     r1,[sp,#0]
+000056  6b01              LDR      r1,[r0,#0x30]
+000058  f88d1000          STRB     r1,[sp,#0]
 ;;;200    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);
-000086  6b00              LDR      r0,[r0,#0x30]
-000088  f88d0000          STRB     r0,[sp,#0]
+00005c  6b00              LDR      r0,[r0,#0x30]
+00005e  f88d0000          STRB     r0,[sp,#0]
 ;;;201    
 ;;;202    }
-00008c  e8bd83f8          POP      {r3-r9,pc}
+000062  bdf8              POP      {r3-r7,pc}
 ;;;203    
                           ENDP
 
-                  |L13.144|
+                  |L13.100|
                           DCD      0x40004818
-                  |L13.148|
-                          DCD      0x40004944
-                  |L13.152|
+                  |L13.104|
                           DCD      0x40061000
-                  |L13.156|
+                  |L13.108|
                           DCD      SPI_LED_Num
 
                           AREA ||i.SPI_W_NBYTE||, CODE, READONLY, ALIGN=2
@@ -1918,87 +1908,85 @@
 ;;;204    void SPI_W_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 000000  b478              PUSH     {r3-r6}
 ;;;205    {	
-000002  4616              MOV      r6,r2
-000004  2200              MOVS     r2,#0
+000002  2400              MOVS     r4,#0
+000004  b120              CBZ      r0,|L14.16|
 ;;;206    	volatile uint8_t	bDummyRead;
 ;;;207    //	uint16_t i;
 ;;;208    	
 ;;;209        // /CS: active
 ;;;210    	switch(idx)
-000006  2805              CMP      r0,#5
-000008  d209              BCS      |L14.30|
-00000a  e8dff000          TBB      [pc,r0]
-00000e  0305              DCB      0x03,0x05
-000010  1e212300          DCB      0x1e,0x21,0x23,0x00
+000006  2801              CMP      r0,#1
+000008  d004              BEQ      |L14.20|
+00000a  2802              CMP      r0,#2
+00000c  d105              BNE      |L14.26|
+00000e  e01a              B        |L14.70|
+                  |L14.16|
 ;;;211    	{
 ;;;212    		case SPI_LED0:
 ;;;213    			SPI_LED0_CS_LOW;		
-000014  4c11              LDR      r4,|L14.92|
+000010  4d0e              LDR      r5,|L14.76|
 ;;;214    			break;
-000016  e001              B        |L14.28|
+000012  e001              B        |L14.24|
+                  |L14.20|
 ;;;215    		case SPI_LED1:
 ;;;216    			SPI_LED1_CS_LOW;		
-000018  4c10              LDR      r4,|L14.92|
-00001a  1d24              ADDS     r4,r4,#4
-                  |L14.28|
-00001c  6022              STR      r2,[r4,#0]            ;213
-                  |L14.30|
+000014  4d0d              LDR      r5,|L14.76|
+000016  1d2d              ADDS     r5,r5,#4
+                  |L14.24|
+000018  602c              STR      r4,[r5,#0]            ;213
+                  |L14.26|
 ;;;217    			break;
 ;;;218    		case SPI_LED2:
 ;;;219    			SPI_LED2_CS_LOW;		
 ;;;220    			break;
-;;;221    		case SPI_LED3:
-;;;222    			SPI_LED3_CS_LOW;		
-;;;223    			break;
-;;;224    		case SPI_LED4:
-;;;225    			SPI_LED4_CS_LOW;		
-;;;226    			break;	
+;;;221    //		case SPI_LED3:
+;;;222    //			SPI_LED3_CS_LOW;		
+;;;223    //			break;
+;;;224    //		case SPI_LED4:
+;;;225    //			SPI_LED4_CS_LOW;		
+;;;226    //			break;	
 ;;;227    	}
 ;;;228    
 ;;;229    
 ;;;230    //	while(!SPI_GET_TX_FIFO_EMPTY_FLAG(SPI_LED_PORT));
 ;;;231        while(SPI_IS_BUSY(SPI_LED_PORT));
-00001e  4c10              LDR      r4,|L14.96|
-                  |L14.32|
-000020  6965              LDR      r5,[r4,#0x14]
-000022  07ed              LSLS     r5,r5,#31
-000024  d1fc              BNE      |L14.32|
+00001a  4c0d              LDR      r4,|L14.80|
+                  |L14.28|
+00001c  6965              LDR      r5,[r4,#0x14]
+00001e  07ed              LSLS     r5,r5,#31
+000020  d1fc              BNE      |L14.28|
 ;;;232    	
 ;;;233        SPI_WRITE_TX(SPI_LED_PORT, (0x20|bPage));
-000026  f0410120          ORR      r1,r1,#0x20
-00002a  6221              STR      r1,[r4,#0x20]
+000022  f0410120          ORR      r1,r1,#0x20
+000026  6221              STR      r1,[r4,#0x20]
 ;;;234        SPI_WRITE_TX(SPI_LED_PORT, bRegAddr);	
-00002c  6226              STR      r6,[r4,#0x20]
-                  |L14.46|
+000028  6222              STR      r2,[r4,#0x20]
+                  |L14.42|
 ;;;235    
 ;;;236    //	while(!SPI_GET_TX_FIFO_EMPTY_FLAG(SPI_LED_PORT));
 ;;;237        while(SPI_IS_BUSY(SPI_LED_PORT));
-00002e  6961              LDR      r1,[r4,#0x14]
-000030  07c9              LSLS     r1,r1,#31
-000032  d1fc              BNE      |L14.46|
+00002a  6961              LDR      r1,[r4,#0x14]
+00002c  07c9              LSLS     r1,r1,#31
+00002e  d1fc              BNE      |L14.42|
 ;;;238    
 ;;;239    	//** For SYNC SPI FIFO
 ;;;240    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);
-000034  6b21              LDR      r1,[r4,#0x30]
-000036  f88d1000          STRB     r1,[sp,#0]
+000030  6b21              LDR      r1,[r4,#0x30]
+000032  f88d1000          STRB     r1,[sp,#0]
 ;;;241    	bDummyRead = SPI_READ_RX(SPI_LED_PORT);	
-00003a  6b21              LDR      r1,[r4,#0x30]
-00003c  f88d1000          STRB     r1,[sp,#0]
+000036  6b21              LDR      r1,[r4,#0x30]
+000038  f88d1000          STRB     r1,[sp,#0]
 ;;;242    
 ;;;243    	#if 1
 ;;;244    	SpiLED_TX_PDMA(idx,b_arySPI_Tx_FIFO,blength);
-000040  461a              MOV      r2,r3
-000042  bc78              POP      {r3-r6}
-000044  4907              LDR      r1,|L14.100|
-000046  f7ffbffe          B.W      SpiLED_TX_PDMA
-00004a  4c04              LDR      r4,|L14.92|
-00004c  3414              ADDS     r4,r4,#0x14           ;219
-00004e  e7e5              B        |L14.28|
-000050  4c05              LDR      r4,|L14.104|
-000052  e7e3              B        |L14.28|
-000054  4c04              LDR      r4,|L14.104|
-000056  1f24              SUBS     r4,r4,#4              ;225
-000058  e7e0              B        |L14.28|
+00003c  461a              MOV      r2,r3
+00003e  bc78              POP      {r3-r6}
+000040  4904              LDR      r1,|L14.84|
+000042  f7ffbffe          B.W      SpiLED_TX_PDMA
+                  |L14.70|
+000046  4d01              LDR      r5,|L14.76|
+000048  3514              ADDS     r5,r5,#0x14           ;219
+00004a  e7e5              B        |L14.24|
 ;;;245    
 ;;;246    
 ;;;247    	#else
@@ -2037,15 +2025,12 @@
 ;;;280    
                           ENDP
 
-00005a  0000              DCW      0x0000
-                  |L14.92|
+                  |L14.76|
                           DCD      0x40004818
-                  |L14.96|
+                  |L14.80|
                           DCD      0x40061000
-                  |L14.100|
+                  |L14.84|
                           DCD      ||.bss||
-                  |L14.104|
-                          DCD      0x40004944
 
                           AREA ||i.SpiLED_Init||, CODE, READONLY, ALIGN=2
 
@@ -2171,13 +2156,13 @@
 ;;;30     	uint32_t u32Abort = 0;	
 ;;;31     
 ;;;32         PDMA_Open(PDMA, (1 << SPI_LED_TX_DMA_CH));
-000004  4e31              LDR      r6,|L16.204|
-000006  4688              MOV      r8,r1                 ;28
-000008  4605              MOV      r5,r0                 ;28
+000004  4d30              LDR      r5,|L16.200|
+000006  460e              MOV      r6,r1                 ;28
+000008  4680              MOV      r8,r0                 ;28
 00000a  f44f5480          MOV      r4,#0x1000
 00000e  4617              MOV      r7,r2                 ;28
 000010  4621              MOV      r1,r4
-000012  4630              MOV      r0,r6
+000012  4628              MOV      r0,r5
 000014  f7fffffe          BL       PDMA_Open
 ;;;33     
 ;;;34     	//TX
@@ -2185,17 +2170,17 @@
 000018  463b              MOV      r3,r7
 00001a  2200              MOVS     r2,#0
 00001c  210c              MOVS     r1,#0xc
-00001e  4630              MOV      r0,r6
+00001e  4628              MOV      r0,r5
 000020  f7fffffe          BL       PDMA_SetTransferCnt
 ;;;36         /* Set source/destination address and attributes */
 ;;;37         PDMA_SetTransferAddr(PDMA,SPI_LED_TX_DMA_CH, (uint32_t)Tx, PDMA_SAR_INC, (uint32_t)&SPI_LED_PORT->TX, PDMA_DAR_FIX);
 000024  f44f6140          MOV      r1,#0xc00
-000028  4829              LDR      r0,|L16.208|
+000028  4828              LDR      r0,|L16.204|
 00002a  e9cd0100          STRD     r0,r1,[sp,#0]
 00002e  2300              MOVS     r3,#0
-000030  4642              MOV      r2,r8
+000030  4632              MOV      r2,r6
 000032  210c              MOVS     r1,#0xc
-000034  4630              MOV      r0,r6
+000034  4628              MOV      r0,r5
 000036  f7fffffe          BL       PDMA_SetTransferAddr
 ;;;38         /* Set request source; set basic mode. */
 ;;;39     	
@@ -2205,7 +2190,7 @@
 00003e  9000              STR      r0,[sp,#0]
 000040  2216              MOVS     r2,#0x16
 000042  210c              MOVS     r1,#0xc
-000044  4630              MOV      r0,r6
+000044  4628              MOV      r0,r5
 000046  f7fffffe          BL       PDMA_SetTransferMode
 ;;;41     	
 ;;;42         /* Single request type. SPI only support PDMA single request type. */
@@ -2213,20 +2198,20 @@
 00004a  2300              MOVS     r3,#0
 00004c  2204              MOVS     r2,#4
 00004e  210c              MOVS     r1,#0xc
-000050  4630              MOV      r0,r6
+000050  4628              MOV      r0,r5
 000052  f7fffffe          BL       PDMA_SetBurstType
 ;;;44         /* Disable table interrupt */
 ;;;45         PDMA->DSCT[SPI_LED_TX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
-000056  f8560fc0          LDR      r0,[r6,#0xc0]!
+000056  f8550fc0          LDR      r0,[r5,#0xc0]!
 00005a  f0400080          ORR      r0,r0,#0x80
-00005e  6030              STR      r0,[r6,#0]
+00005e  6028              STR      r0,[r5,#0]
 ;;;46     
 ;;;47         SPI_TRIGGER_TX_PDMA(SPI_LED_PORT);
-000060  491b              LDR      r1,|L16.208|
-000062  3920              SUBS     r1,r1,#0x20
-000064  68c8              LDR      r0,[r1,#0xc]
+000060  4d1a              LDR      r5,|L16.204|
+000062  3d20              SUBS     r5,r5,#0x20
+000064  68e8              LDR      r0,[r5,#0xc]
 000066  f0400001          ORR      r0,r0,#1
-00006a  60c8              STR      r0,[r1,#0xc]
+00006a  60e8              STR      r0,[r5,#0xc]
 ;;;48     
 ;;;49         while(1)
 ;;;50         {
@@ -2237,67 +2222,66 @@
 ;;;55             {
 ;;;56                 /* Check the PDMA transfer done interrupt flags */
 ;;;57                 if((PDMA_GET_TD_STS(PDMA) & (1 << SPI_LED_TX_DMA_CH)) == (1 << SPI_LED_TX_DMA_CH))
-00006c  4b19              LDR      r3,|L16.212|
-00006e  4819              LDR      r0,|L16.212|
-000070  3308              ADDS     r3,r3,#8
+00006c  4918              LDR      r1,|L16.208|
+00006e  4a18              LDR      r2,|L16.208|
+000070  3108              ADDS     r1,r1,#8
                   |L16.114|
-000072  6802              LDR      r2,[r0,#0]            ;52
-000074  0796              LSLS     r6,r2,#30             ;54
+000072  6810              LDR      r0,[r2,#0]            ;52
+000074  0783              LSLS     r3,r0,#30             ;54
 000076  d5fc              BPL      |L16.114|
-000078  681e              LDR      r6,[r3,#0]
-00007a  04f6              LSLS     r6,r6,#19
-00007c  d51e              BPL      |L16.188|
+000078  680b              LDR      r3,[r1,#0]
+00007a  04db              LSLS     r3,r3,#19
+00007c  d51d              BPL      |L16.186|
 ;;;58                 {
 ;;;59                     /* Clear the DMA transfer done flags */
 ;;;60                     PDMA_CLR_TD_FLAG(PDMA,1 << SPI_LED_TX_DMA_CH);
-00007e  601c              STR      r4,[r3,#0]
+00007e  600c              STR      r4,[r1,#0]
 ;;;61                     /* Disable SPI PDMA TX function */
 ;;;62                     SPI_DISABLE_TX_PDMA(SPI_LED_PORT);
-000080  68c8              LDR      r0,[r1,#0xc]
+000080  68e8              LDR      r0,[r5,#0xc]
 000082  f0200001          BIC      r0,r0,#1
-000086  60c8              STR      r0,[r1,#0xc]
+000086  60e8              STR      r0,[r5,#0xc]
 ;;;63     
 ;;;64     				TIMER_Delay(TIMER0,500);
 000088  f44f71fa          MOV      r1,#0x1f4
-00008c  4812              LDR      r0,|L16.216|
+00008c  4811              LDR      r0,|L16.212|
 00008e  f7fffffe          BL       TIMER_Delay
-000092  2001              MOVS     r0,#1                 ;28
 ;;;65     				switch(idx)
-000094  2d05              CMP      r5,#5
-000096  d217              BCS      |L16.200|
-000098  e8dff005          TBB      [pc,r5]
-00009c  0305080b          DCB      0x03,0x05,0x08,0x0b
-0000a0  0d00              DCB      0x0d,0x00
+000092  ea5f0008          MOVS     r0,r8
+000096  f04f0101          MOV      r1,#1                 ;28
+00009a  d006              BEQ      |L16.170|
+00009c  2801              CMP      r0,#1
+00009e  d007              BEQ      |L16.176|
+0000a0  f1b80f02          CMP      r8,#2
+0000a4  d107              BNE      |L16.182|
 ;;;66     				{
 ;;;67     					case SPI_LED0:
 ;;;68     						SPI_LED0_CS_HIGH;		
-0000a2  490e              LDR      r1,|L16.220|
 ;;;69     						break;
-0000a4  e00f              B        |L16.198|
 ;;;70     					case SPI_LED1:
 ;;;71     						SPI_LED1_CS_HIGH;		
-0000a6  490d              LDR      r1,|L16.220|
-0000a8  1d09              ADDS     r1,r1,#4
 ;;;72     						break;
-0000aa  e00c              B        |L16.198|
 ;;;73     					case SPI_LED2:
 ;;;74     						SPI_LED2_CS_HIGH;		
-0000ac  490b              LDR      r1,|L16.220|
-0000ae  3114              ADDS     r1,r1,#0x14
+0000a6  480c              LDR      r0,|L16.216|
 ;;;75     						break;
-0000b0  e009              B        |L16.198|
-;;;76     					case SPI_LED3:
-;;;77     						SPI_LED3_CS_HIGH;		
-0000b2  490b              LDR      r1,|L16.224|
-;;;78     						break;
-0000b4  e007              B        |L16.198|
-;;;79     					case SPI_LED4:
-;;;80     						SPI_LED4_CS_HIGH;		
-0000b6  490a              LDR      r1,|L16.224|
-0000b8  1f09              SUBS     r1,r1,#4
-;;;81     						break;	
-0000ba  e004              B        |L16.198|
-                  |L16.188|
+0000a8  e004              B        |L16.180|
+                  |L16.170|
+0000aa  480b              LDR      r0,|L16.216|
+0000ac  3814              SUBS     r0,r0,#0x14           ;68
+0000ae  e001              B        |L16.180|
+                  |L16.176|
+0000b0  4809              LDR      r0,|L16.216|
+0000b2  3810              SUBS     r0,r0,#0x10           ;71
+                  |L16.180|
+0000b4  6001              STR      r1,[r0,#0]            ;68
+                  |L16.182|
+;;;76     //					case SPI_LED3:
+;;;77     //						SPI_LED3_CS_HIGH;		
+;;;78     //						break;
+;;;79     //					case SPI_LED4:
+;;;80     //						SPI_LED4_CS_HIGH;		
+;;;81     //						break;	
 ;;;82     				}
 ;;;83     				
 ;;;84                     break;
@@ -2305,41 +2289,39 @@
 ;;;86     
 ;;;87                 /* Check the DMA transfer abort interrupt flag */
 ;;;88                 if(u32RegValue & PDMA_INTSTS_ABTIF_Msk)
-0000bc  07d2              LSLS     r2,r2,#31
-0000be  d0d8              BEQ      |L16.114|
 ;;;89                 {
 ;;;90                     /* Get the target abort flag */
 ;;;91                     u32Abort = PDMA_GET_ABORT_STS(PDMA);
-0000c0  4904              LDR      r1,|L16.212|
-0000c2  1d09              ADDS     r1,r1,#4
-0000c4  6808              LDR      r0,[r1,#0]
-                  |L16.198|
 ;;;92                     /* Clear the target abort flag */
 ;;;93                     PDMA_CLR_ABORT_FLAG(PDMA,u32Abort);
-0000c6  6008              STR      r0,[r1,#0]
-                  |L16.200|
 ;;;94                     break;
 ;;;95                 }
 ;;;96             }
 ;;;97         }
 ;;;98     
 ;;;99     }
-0000c8  e8bd81fc          POP      {r2-r8,pc}
+0000b6  e8bd81fc          POP      {r2-r8,pc}
+                  |L16.186|
+0000ba  07c0              LSLS     r0,r0,#31             ;88
+0000bc  d0d9              BEQ      |L16.114|
+0000be  4904              LDR      r1,|L16.208|
+0000c0  1d09              ADDS     r1,r1,#4              ;91
+0000c2  6808              LDR      r0,[r1,#0]            ;91
+0000c4  6008              STR      r0,[r1,#0]            ;93
+0000c6  e7f6              B        |L16.182|
 ;;;100    
                           ENDP
 
-                  |L16.204|
+                  |L16.200|
                           DCD      0x40008000
-                  |L16.208|
+                  |L16.204|
                           DCD      0x40061020
-                  |L16.212|
+                  |L16.208|
                           DCD      0x4000841c
-                  |L16.216|
+                  |L16.212|
                           DCD      0x40050000
-                  |L16.220|
-                          DCD      0x40004818
-                  |L16.224|
-                          DCD      0x40004944
+                  |L16.216|
+                          DCD      0x4000482c
 
                           AREA ||.bss||, DATA, NOINIT, ALIGN=0
 

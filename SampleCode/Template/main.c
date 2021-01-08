@@ -416,8 +416,6 @@ int main()
 	LED_SNLED2735Init(SPI_LED0);
 	LED_SNLED2735Init(SPI_LED1);
 	LED_SNLED2735Init(SPI_LED2);
-	LED_SNLED2735Init(SPI_LED3);
-	LED_SNLED2735Init(SPI_LED4);
 	
     /* Got no where to go, just loop forever */
     while(1)

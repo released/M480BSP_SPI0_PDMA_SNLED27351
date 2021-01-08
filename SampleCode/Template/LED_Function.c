@@ -73,12 +73,12 @@ void SpiLED_TX_PDMA(uint8_t idx , uint8_t* Tx , uint16_t len)
 					case SPI_LED2:
 						SPI_LED2_CS_HIGH;		
 						break;
-					case SPI_LED3:
-						SPI_LED3_CS_HIGH;		
-						break;
-					case SPI_LED4:
-						SPI_LED4_CS_HIGH;		
-						break;	
+//					case SPI_LED3:
+//						SPI_LED3_CS_HIGH;		
+//						break;
+//					case SPI_LED4:
+//						SPI_LED4_CS_HIGH;		
+//						break;	
 				}
 				
                 break;
@@ -158,12 +158,12 @@ void SPI_W_3BYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t bData)
 		case SPI_LED2:
 			SPI_LED2_CS_LOW;		
 			break;
-		case SPI_LED3:
-			SPI_LED3_CS_LOW;		
-			break;
-		case SPI_LED4:
-			SPI_LED4_CS_LOW;		
-			break;	
+//		case SPI_LED3:
+//			SPI_LED3_CS_LOW;		
+//			break;
+//		case SPI_LED4:
+//			SPI_LED4_CS_LOW;		
+//			break;	
 	}
 
 
@@ -186,12 +186,12 @@ void SPI_W_3BYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t bData)
 		case SPI_LED2:
 			SPI_LED2_CS_HIGH;		
 			break;
-		case SPI_LED3:
-			SPI_LED3_CS_HIGH;		
-			break;
-		case SPI_LED4:
-			SPI_LED4_CS_HIGH;		
-			break;	
+//		case SPI_LED3:
+//			SPI_LED3_CS_HIGH;		
+//			break;
+//		case SPI_LED4:
+//			SPI_LED4_CS_HIGH;		
+//			break;	
 	}
 
     // skip first rx data
@@ -218,12 +218,12 @@ void SPI_W_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 		case SPI_LED2:
 			SPI_LED2_CS_LOW;		
 			break;
-		case SPI_LED3:
-			SPI_LED3_CS_LOW;		
-			break;
-		case SPI_LED4:
-			SPI_LED4_CS_LOW;		
-			break;	
+//		case SPI_LED3:
+//			SPI_LED3_CS_LOW;		
+//			break;
+//		case SPI_LED4:
+//			SPI_LED4_CS_LOW;		
+//			break;	
 	}
 
 
@@ -295,12 +295,12 @@ void SPI_R_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 		case SPI_LED2:
 			SPI_LED2_CS_LOW;		
 			break;
-		case SPI_LED3:
-			SPI_LED3_CS_LOW;		
-			break;
-		case SPI_LED4:
-			SPI_LED4_CS_LOW;		
-			break;	
+//		case SPI_LED3:
+//			SPI_LED3_CS_LOW;		
+//			break;
+//		case SPI_LED4:
+//			SPI_LED4_CS_LOW;		
+//			break;	
 	}
 
 
@@ -336,12 +336,12 @@ void SPI_R_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 		case SPI_LED2:
 			SPI_LED2_CS_HIGH;		
 			break;
-		case SPI_LED3:
-			SPI_LED3_CS_HIGH;		
-			break;
-		case SPI_LED4:
-			SPI_LED4_CS_HIGH;		
-			break;	
+//		case SPI_LED3:
+//			SPI_LED3_CS_HIGH;		
+//			break;
+//		case SPI_LED4:
+//			SPI_LED4_CS_HIGH;		
+//			break;	
 	}
 
 

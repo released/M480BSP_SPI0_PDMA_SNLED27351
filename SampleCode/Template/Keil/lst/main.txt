@@ -1043,22 +1043,16 @@
 ;;;418    	LED_SNLED2735Init(SPI_LED2);
 000020  2002              MOVS     r0,#2
 000022  f7fffffe          BL       LED_SNLED2735Init
-;;;419    	LED_SNLED2735Init(SPI_LED3);
-000026  2003              MOVS     r0,#3
-000028  f7fffffe          BL       LED_SNLED2735Init
-;;;420    	LED_SNLED2735Init(SPI_LED4);
-00002c  2004              MOVS     r0,#4
-00002e  f7fffffe          BL       LED_SNLED2735Init
-                  |L13.50|
-;;;421    	
-;;;422        /* Got no where to go, just loop forever */
-;;;423        while(1)
-000032  e7fe              B        |L13.50|
-;;;424        {
-;;;425    
-;;;426        }
-;;;427    }
-;;;428    
+                  |L13.38|
+;;;419    	
+;;;420        /* Got no where to go, just loop forever */
+;;;421        while(1)
+000026  e7fe              B        |L13.38|
+;;;422        {
+;;;423    
+;;;424        }
+;;;425    }
+;;;426    
                           ENDP
 
 
