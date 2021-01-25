@@ -61,7 +61,7 @@ void SpiLED_TX_PDMA(uint8_t idx , uint8_t* Tx , uint16_t len)
                 /* Disable SPI PDMA TX function */
                 SPI_DISABLE_TX_PDMA(SPI_LED_PORT);
 
-				TIMER_Delay(TIMER0,500);
+				while (SPI_IS_BUSY(SPI_LED_PORT));	//TIMER_Delay(TIMER0,500);
 				switch(idx)
 				{
 					case SPI_LED0:
