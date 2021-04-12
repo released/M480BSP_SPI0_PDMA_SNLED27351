@@ -434,6 +434,10 @@ void LED_SnledType4Fun2(uint8_t idx);
 void LED_SnledType4Fun3(uint8_t idx);
 void LED_SnledType4Fun4(uint8_t idx)	;
 void LED_SnledSetColor(uint8_t idx , uint8_t bPWM_R_Value , uint8_t bPWM_G_Value , uint8_t bPWM_B_Value);
+
+void LED_SnledSetColor_init(uint8_t idx_start , uint8_t idx_end);
+void LED_SnledSetColor_all_idx(uint8_t idx_start , uint8_t idx_end ,uint8_t bPWM_R_Value , uint8_t bPWM_G_Value , uint8_t bPWM_B_Value);
+
 void LED_SnledSetSingleColor(uint8_t idx ,uint8_t bPWM_Index, uint8_t bPWM_R_Value , uint8_t bPWM_G_Value , uint8_t bPWM_B_Value);
 
 extern const uint8_t b_tabLED_Location[];

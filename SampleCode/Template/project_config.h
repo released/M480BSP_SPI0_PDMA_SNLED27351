@@ -13,18 +13,18 @@
 
 
 #define SPI_LED0_CS_LOW					(PA6 = 0)
-#define SPI_LED0_CS_HIGH				(PA6 = 1)
+#define SPI_LED0_CS_HIGH					(PA6 = 1)
 #define SPI_LED1_CS_LOW					(PA7 = 0)
-#define SPI_LED1_CS_HIGH				(PA7 = 1)
+#define SPI_LED1_CS_HIGH					(PA7 = 1)
 #define SPI_LED2_CS_LOW					(PA11 = 0)
-#define SPI_LED2_CS_HIGH				(PA11 = 1)
+#define SPI_LED2_CS_HIGH					(PA11 = 1)
 #define SPI_LED3_CS_LOW					(PF1 = 0)
-#define SPI_LED3_CS_HIGH				(PF1 = 1)
+#define SPI_LED3_CS_HIGH					(PF1 = 1)
 #define SPI_LED4_CS_LOW					(PF0 = 0)
-#define SPI_LED4_CS_HIGH				(PF0 = 1)
+#define SPI_LED4_CS_HIGH					(PF0 = 1)
 
-#define SPI_SNLED27351_POWERON		(PC14 = 1)
-#define SPI_SNLED27351_POWERDOWN	(PC14 = 0)
+#define SPI_SNLED27351_POWERON			(PC14 = 1)
+#define SPI_SNLED27351_POWERDOWN		(PC14 = 0)
 
 
 #define SPI_LED_CLK_FREQ  				(200000)
@@ -49,8 +49,7 @@ typedef enum{
 
 	flag_uart_rx = 0 ,
 	flag_compare_error ,			
-	flag_WDT ,	
-	flag_UART_PDMA ,
+	flag_LED_test ,
 
 	flag_SPI_LED_TX ,
 	

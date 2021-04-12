@@ -31,7 +31,26 @@ volatile uint32_t BitFlag = 0;
 //#define is_flag_set(idx)							(BitFlag_READ(ReadBit(idx)))
 //#define set_flag(idx,en)							( (en == 1) ? (BitFlag_ON(ReadBit(idx))) : (BitFlag_OFF(ReadBit(idx))))
 
+uint32_t conter_tick = 0;
+
 /*_____ F U N C T I O N S ______------______________________________________*/
+
+
+void tick_counter(void)
+{
+	conter_tick++;
+}
+
+uint32_t get_tick(void)
+{
+	return (conter_tick);
+}
+
+void set_tick(uint32_t t)
+{
+	conter_tick = t;
+}
+
 void compare_buffer(uint8_t *src, uint8_t *des, int nBytes)
 {
     uint16_t i = 0;	
@@ -161,6 +180,77 @@ void copy_buffer(void *dest, void *src, unsigned int size)
 //    }	
 //}
 
+void LED_pattern_Rainbow(void)
+{
+//	static uint16_t i = 0;
+	static uint8_t State = 1;
+	static uint8_t Red = 0xFF;
+	static uint8_t Green = 0;
+	static uint8_t Blue = 0;
+
+	#if 1	//Rainbow
+
+	if (Red == 0xFF && Blue == 0x00)
+	{
+		State = 1;
+	}
+	if (Red == 0x00 && Green == 0xFF)
+	{
+		State = 2;
+	}		
+	if (Green == 0x00 && Blue == 0xFF)
+	{
+		State = 3;
+	}
+
+	switch (State)
+	{
+		case 1:
+			Red--;
+			Green++;
+			Blue = 0;			
+			break;
+
+		case 2:
+			Red = 0;
+			Green--;
+			Blue++;				
+			break;
+
+		case 3:
+			Red++;
+			Green = 0;
+			Blue--;					
+			break;
+
+	}
+
+	LED_SnledSetColor_all_idx(SPI_LED0,SPI_LED1,Red,Green,Blue);
+
+	#else	// white
+	if (State)
+	{
+		i++;
+		if (i == 0x7F)
+		{
+			State = 0;
+		}
+	}
+	else
+	{
+		i--;
+		if (i == 0x00)
+		{
+			State = 1;
+		}			
+	}
+
+	LED_SnledSetColor_all_idx(SPI_LED0,SPI_LED1,i,i,i);
+	
+	#endif				
+
+}
+
 void UARTx_Process(void)
 {
 	uint8_t res = 0;
@@ -276,24 +366,23 @@ void UART0_Init(void)
 
 void TMR1_IRQHandler(void)
 {
-	static uint16_t CNT_1000ms = 0;	
-	
-//	static uint32_t log = 0;	
 	
     if(TIMER_GetIntFlag(TIMER1) == 1)
     {
         TIMER_ClearIntFlag(TIMER1);
-	
-		if (CNT_1000ms++ > 1000)
+		tick_counter();
+		
+		if ((get_tick() % 1000) == 0)
 		{		
-			CNT_1000ms = 0;
 			#if (_debug_log_UART_ == 1)	//debug			
 //			printf("%s : %2d\r\n" , __FUNCTION__ , log++);
 			#endif		
-		
-			set_flag(flag_UART_PDMA , ENABLE);
-
 		}
+
+		if ((get_tick() % 5) == 0)
+		{		
+			set_flag(flag_LED_test , ENABLE);
+		}			
 	
     }
 }
@@ -421,6 +510,11 @@ int main()
     while(1)
     {
 
+		if (is_flag_set(flag_LED_test))
+		{
+			set_flag(flag_LED_test ,DISABLE);
+			LED_pattern_Rainbow();
+		}	
     }
 }
 

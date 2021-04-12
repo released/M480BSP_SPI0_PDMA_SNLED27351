@@ -21,6 +21,55 @@ uint8_t 	b_arySPI_Rx_FIFO[192];
 * Note			: None
 *****************************************************************************/
 
+void set_CS_Low(uint8_t idx)
+{
+//	SPI_LED_Num = idx;
+
+	switch(idx)
+	{
+		case SPI_LED0:
+			SPI_LED0_CS_LOW;		
+			break;
+		case SPI_LED1:
+			SPI_LED1_CS_LOW;		
+			break;
+		case SPI_LED2:
+			SPI_LED2_CS_LOW;		
+			break;
+		case SPI_LED3:
+			SPI_LED3_CS_LOW;		
+			break;
+		case SPI_LED4:
+			SPI_LED4_CS_LOW;		
+			break;	
+	}
+
+}
+
+void set_CS_High(uint8_t idx)
+{
+//	SPI_LED_Num = idx;
+	
+	switch(idx)
+	{
+		case SPI_LED0:
+			SPI_LED0_CS_HIGH;		
+			break;
+		case SPI_LED1:
+			SPI_LED1_CS_HIGH;		
+			break;
+		case SPI_LED2:
+			SPI_LED2_CS_HIGH;		
+			break;
+		case SPI_LED3:
+			SPI_LED3_CS_HIGH;		
+			break;
+		case SPI_LED4:
+			SPI_LED4_CS_HIGH;		
+			break;	
+	}
+}
+
 /*	
 	idx : SPI_LED0 ~ SPI_LED4
 */
@@ -62,24 +111,7 @@ void SpiLED_TX_PDMA(uint8_t idx , uint8_t* Tx , uint16_t len)
                 SPI_DISABLE_TX_PDMA(SPI_LED_PORT);
 
 				while (SPI_IS_BUSY(SPI_LED_PORT));	//TIMER_Delay(TIMER0,500);
-				switch(idx)
-				{
-					case SPI_LED0:
-						SPI_LED0_CS_HIGH;		
-						break;
-					case SPI_LED1:
-						SPI_LED1_CS_HIGH;		
-						break;
-					case SPI_LED2:
-						SPI_LED2_CS_HIGH;		
-						break;
-//					case SPI_LED3:
-//						SPI_LED3_CS_HIGH;		
-//						break;
-//					case SPI_LED4:
-//						SPI_LED4_CS_HIGH;		
-//						break;	
-				}
+				set_CS_High(idx);
 				
                 break;
             }
@@ -138,6 +170,15 @@ void SpiLED_Init(void)
 
 //	SPI_SET_SUSPEND_CYCLE(SPI_LED_PORT,2);
 
+
+	/*
+		Schmitt trigger structure as input mode only.   
+		Hardware power down the chip when pull to low. 
+	*/
+	SPI_SNLED27351_POWERON;
+	
+    CLK_SysTickDelay(2000);
+
 }
 
 
@@ -147,25 +188,7 @@ void SPI_W_3BYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t bData)
 	volatile uint8_t bDummyRead;
 
     // /CS: active
-	switch(idx)
-	{
-		case SPI_LED0:
-			SPI_LED0_CS_LOW;		
-			break;
-		case SPI_LED1:
-			SPI_LED1_CS_LOW;		
-			break;
-		case SPI_LED2:
-			SPI_LED2_CS_LOW;		
-			break;
-//		case SPI_LED3:
-//			SPI_LED3_CS_LOW;		
-//			break;
-//		case SPI_LED4:
-//			SPI_LED4_CS_LOW;		
-//			break;	
-	}
-
+	set_CS_Low(idx);
 
     SPI_WRITE_TX(SPI_LED_PORT, (0x20|bPage));
     SPI_WRITE_TX(SPI_LED_PORT, bRegAddr);
@@ -175,24 +198,7 @@ void SPI_W_3BYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t bData)
     while(SPI_IS_BUSY(SPI_LED_PORT));
 
     // /CS: de-active
-	switch(SPI_LED_Num)
-	{
-		case SPI_LED0:
-			SPI_LED0_CS_HIGH;		
-			break;
-		case SPI_LED1:
-			SPI_LED1_CS_HIGH;		
-			break;
-		case SPI_LED2:
-			SPI_LED2_CS_HIGH;		
-			break;
-//		case SPI_LED3:
-//			SPI_LED3_CS_HIGH;		
-//			break;
-//		case SPI_LED4:
-//			SPI_LED4_CS_HIGH;		
-//			break;	
-	}
+    set_CS_High(idx);
 
     // skip first rx data
 	bDummyRead = SPI_READ_RX(SPI_LED_PORT);
@@ -207,24 +213,7 @@ void SPI_W_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 //	uint16_t i;
 	
     // /CS: active
-	switch(idx)
-	{
-		case SPI_LED0:
-			SPI_LED0_CS_LOW;		
-			break;
-		case SPI_LED1:
-			SPI_LED1_CS_LOW;		
-			break;
-		case SPI_LED2:
-			SPI_LED2_CS_LOW;		
-			break;
-//		case SPI_LED3:
-//			SPI_LED3_CS_LOW;		
-//			break;
-//		case SPI_LED4:
-//			SPI_LED4_CS_LOW;		
-//			break;	
-	}
+	set_CS_Low(idx);
 
 
 //	while(!SPI_GET_TX_FIFO_EMPTY_FLAG(SPI_LED_PORT));
@@ -257,24 +246,8 @@ void SPI_W_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 	while(SPI_IS_BUSY(SPI_LED_PORT));
 	
     // /CS: de-active
-	switch(SPI_LED_Num)
-	{
-		case SPI_LED0:
-			SPI_LED0_CS_HIGH;		
-			break;
-		case SPI_LED1:
-			SPI_LED1_CS_HIGH;		
-			break;
-		case SPI_LED2:
-			SPI_LED2_CS_HIGH;		
-			break;
-		case SPI_LED3:
-			SPI_LED3_CS_HIGH;		
-			break;
-		case SPI_LED4:
-			SPI_LED4_CS_HIGH;		
-			break;	
-	}
+	set_CS_High(idx);
+
 	#endif
 }
 
@@ -284,26 +257,8 @@ void SPI_R_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 	uint16_t i;
 	
     // /CS: active
-	switch(idx)
-	{
-		case SPI_LED0:
-			SPI_LED0_CS_LOW;		
-			break;
-		case SPI_LED1:
-			SPI_LED1_CS_LOW;		
-			break;
-		case SPI_LED2:
-			SPI_LED2_CS_LOW;		
-			break;
-//		case SPI_LED3:
-//			SPI_LED3_CS_LOW;		
-//			break;
-//		case SPI_LED4:
-//			SPI_LED4_CS_LOW;		
-//			break;	
-	}
-
-
+	set_CS_Low(idx);
+	
 	while(!SPI_GET_TX_FIFO_EMPTY_FLAG(SPI_LED_PORT));
     SPI_WRITE_TX(SPI_LED_PORT, (0xA0|bPage));
     SPI_WRITE_TX(SPI_LED_PORT, bRegAddr);	
@@ -325,25 +280,7 @@ void SPI_R_NBYTE(uint8_t idx ,uint8_t bPage, uint8_t bRegAddr, uint8_t blength)
 	while(SPI_IS_BUSY(SPI_LED_PORT));	
 
     // /CS: de-active
-	switch(SPI_LED_Num)
-	{
-		case SPI_LED0:
-			SPI_LED0_CS_HIGH;		
-			break;
-		case SPI_LED1:
-			SPI_LED1_CS_HIGH;		
-			break;
-		case SPI_LED2:
-			SPI_LED2_CS_HIGH;		
-			break;
-//		case SPI_LED3:
-//			SPI_LED3_CS_HIGH;		
-//			break;
-//		case SPI_LED4:
-//			SPI_LED4_CS_HIGH;		
-//			break;	
-	}
-
+	set_CS_High(idx);
 
 }
 
@@ -357,14 +294,6 @@ void LED_SNLED2735Init(uint8_t idx)
 		SPI mode: MSEL tie VDD. 
 	*/
 	
-
-	/*
-		Schmitt trigger structure as input mode only.   
-		Hardware power down the chip when pull to low. 
-	*/
-	SPI_SNLED27351_POWERON;
-	
-    CLK_SysTickDelay(25000);
 	
 	//** Select to function page
 	//** Setting LED driver to shutdown mode
@@ -1052,6 +981,48 @@ void LED_SnledSetColor(uint8_t idx , uint8_t bPWM_R_Value , uint8_t bPWM_G_Value
 	SPI_W_NBYTE(idx, LED_PWM_PAGE, LED_PWM_FIRST_ADDR, LED_PWM_LENGTH);
 	CLK_SysTickDelay(60);
 
+
+}
+
+void LED_SnledSetColor_init(uint8_t idx_start , uint8_t idx_end)
+{
+	uint32_t i;
+	uint8_t idx = 0 ;
+	
+	#if 1
+	// System must go to SW shutdowm mode
+	for( idx = idx_start; idx <= idx_end ; idx++)
+		SPI_W_3BYTE(idx, FUNCTION_PAGE,CONFIGURATION_REG, mskSW_SHUT_DOWN_MODE);
+	
+	//=====================================//
+	//Set LED CTL Registers (Frame1Page) //
+	//=====================================//
+	for( i = 0; i< LED_CONTROL_ON_OFF_LENGTH ; i++)
+	{
+		b_arySPI_Tx_FIFO[i] = b_tabLED_Control_Map[i];	// setting 1~64 RGB LED CTL on
+	}
+	for( idx = idx_start; idx <= idx_end ; idx++)
+		SPI_W_NBYTE(idx, LED_CONTROL_PAGE, LED_CONTROL_ON_OFF_FIRST_ADDR, LED_CONTROL_PAGE_LENGTH);
+	
+	//** Setting LED driver to normal mode 
+	for( idx = idx_start; idx <= idx_end ; idx++)
+		SPI_W_3BYTE(idx, FUNCTION_PAGE,CONFIGURATION_REG, mskSW_NORMAL_MODE);
+	#endif
+
+}
+
+void LED_SnledSetColor_all_idx(uint8_t idx_start , uint8_t idx_end ,uint8_t bPWM_R_Value , uint8_t bPWM_G_Value , uint8_t bPWM_B_Value)
+{
+	uint32_t j;
+	uint8_t idx = 0 ;
+		
+	for (j=0;j<LED_LAYOUT_TOTAL_LED_NUMBERS;j++)
+		LED_PWMUpdate(b_tabLED_Location[j],	bPWM_R_Value ,bPWM_G_Value ,bPWM_B_Value);
+
+	//** Update LED Driver
+	for( idx = idx_start; idx <= idx_end ; idx++)
+		SPI_W_NBYTE(idx, LED_PWM_PAGE, LED_PWM_FIRST_ADDR, LED_PWM_LENGTH);
+	CLK_SysTickDelay(1);
 
 }
 

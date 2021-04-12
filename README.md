@@ -1,6 +1,15 @@
 # M480BSP_SPI0_PDMA_SNLED27351
  M480BSP_SPI0_PDMA_SNLED27351
 
+
+update @ 2021/04/12
+
+1. add LED rainbow behavior , refer to video (IMG_1526.MOV) in repo.
+
+![caption](https://github.com/released/M480BSP_SPI0_PDMA_SNLED27351/blob/main/IMG_1526.gif)
+
+
+
 update @ 2021/01/08
 
 1. init SPI0 , to drive SNLED2735
